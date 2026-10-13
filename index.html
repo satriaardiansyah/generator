@@ -683,10 +683,10 @@
     <div class="panel">
       <h2>Preset</h2>
       <div class="presets" id="presets">
-        <button data-p="160,48,10" style="--pc:var(--lime)">Santai</button>
-        <button data-p="240,36,8" class="on" style="--pc:var(--cyan)">Normal</button>
-        <button data-p="340,32,6" style="--pc:var(--sun)">Sulit</button>
-        <button data-p="460,26,4" style="--pc:var(--pink)">Hardcore</button>
+        <button data-p="160,48,10,12,320" style="--pc:var(--lime)">Santai</button>
+        <button data-p="240,36,8,8,260" class="on" style="--pc:var(--cyan)">Normal</button>
+        <button data-p="340,32,6,6,200" style="--pc:var(--sun)">Sulit</button>
+        <button data-p="460,26,4,4,140" style="--pc:var(--pink)">Hardcore</button>
       </div>
       <h2>Pengaturan</h2>
       <div class="row"><label for="speed">Kecepatan jarum</label><input type="range" id="speed" min="120" max="520"
@@ -718,10 +718,23 @@
       $('gapV').textContent = ($('gap').value / 10).toFixed(1) + 's'; $('animV').textContent = D ? D + ' ms' : 'Instan';
       $('msg').style.animationDuration = Math.max(D, 1) + 'ms';
     }
-    ['speed', 'zone', 'great', 'gap', 'anim'].forEach(i => $(i).addEventListener('input', () => { cfg(); document.querySelectorAll('#presets button').forEach(b => b.classList.remove('on')) }));
+    function syncPreset() {
+      document.querySelectorAll('#presets button').forEach(b => {
+        const [s, z, g, gap, anim] = b.dataset.p.split(',');
+        const active = $('speed').value === s && $('zone').value === z && $('great').value === g &&
+          (gap === undefined || $('gap').value === gap) &&
+          (anim === undefined || $('anim').value === anim);
+        b.classList.toggle('on', active);
+      });
+    }
+    ['speed', 'zone', 'great', 'gap', 'anim'].forEach(i => $(i).addEventListener('input', () => { cfg(); syncPreset() }));
     $('presets').addEventListener('click', e => {
       const b = e.target.closest('button'); if (!b) return;
-      const [s, z, g] = b.dataset.p.split(','); $('speed').value = s; $('zone').value = z; $('great').value = g; cfg();
+      const [s, z, g, gap, anim] = b.dataset.p.split(',');
+      $('speed').value = s; $('zone').value = z; $('great').value = g;
+      if (gap !== undefined) $('gap').value = gap;
+      if (anim !== undefined) $('anim').value = anim;
+      cfg();
       document.querySelectorAll('#presets button').forEach(x => x.classList.toggle('on', x === b));
     });
     function stats() {
