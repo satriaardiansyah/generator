@@ -531,6 +531,237 @@
       font-size: 11px
     }
 
+    .mode-tabs {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      background: rgba(0, 0, 0, .28);
+      padding: 5px;
+      border-radius: 20px;
+      border: 2px solid var(--bd);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px)
+    }
+
+    .mode-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 11px 14px;
+      font-family: Bungee, sans-serif;
+      font-weight: 400;
+      font-size: 13.5px;
+      letter-spacing: .02em;
+      border-radius: 15px;
+      border: 2px solid transparent;
+      background: transparent;
+      color: var(--mut);
+      cursor: pointer;
+      transition: all .2s ease
+    }
+
+    .mode-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, .06);
+      transform: none
+    }
+
+    .mode-btn.on {
+      background: linear-gradient(135deg, rgba(25, 227, 255, .25), rgba(138, 92, 255, .3));
+      border-color: var(--cyan);
+      color: #fff;
+      box-shadow: 0 0 16px -2px rgba(25, 227, 255, .45);
+      text-shadow: 0 0 10px rgba(25, 227, 255, .6)
+    }
+
+    .mode-btn[data-mode="ranked"].on {
+      background: linear-gradient(135deg, rgba(255, 61, 90, .25), rgba(255, 61, 154, .35));
+      border-color: var(--red);
+      box-shadow: 0 0 18px -2px rgba(255, 61, 90, .5);
+      text-shadow: 0 0 10px rgba(255, 61, 90, .6)
+    }
+
+    .badge-lives {
+      font-size: 11px;
+      font-family: Nunito, sans-serif;
+      font-weight: 900;
+      background: rgba(255, 61, 90, .25);
+      border: 1px solid var(--red);
+      color: #fff;
+      padding: 1px 7px;
+      border-radius: 99px;
+      box-shadow: 0 0 8px rgba(255, 61, 90, .3)
+    }
+
+    .lives-card {
+      width: 100%;
+      background: var(--card);
+      border: 2px solid var(--bd);
+      border-radius: 18px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      transition: all .25s ease
+    }
+
+    .lives-card.ranked {
+      border-color: rgba(255, 61, 90, .45);
+      background: radial-gradient(circle at 10% 50%, rgba(255, 61, 90, .18), var(--card));
+      box-shadow: 0 0 20px -6px rgba(255, 61, 90, .3)
+    }
+
+    .lives-info {
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .lives-label {
+      font-size: 13px;
+      color: var(--mut)
+    }
+
+    .lives-hearts {
+      display: flex;
+      gap: 6px;
+      font-size: 20px;
+      line-height: 1
+    }
+
+    .heart {
+      display: inline-block;
+      transition: transform .25s cubic-bezier(.34, 1.56, .64, 1), filter .25s ease, opacity .25s ease;
+      filter: drop-shadow(0 0 6px rgba(255, 61, 90, .7))
+    }
+
+    .heart.active {
+      animation: heartBeat 1.8s ease-in-out infinite
+    }
+
+    .heart.lost {
+      transform: scale(.72);
+      filter: grayscale(1) opacity(.35);
+      animation: heartBreak .35s ease-out
+    }
+
+    @keyframes heartBreak {
+      0% { transform: scale(1.4) }
+      50% { transform: scale(.6) rotate(-15deg) }
+      100% { transform: scale(.72) rotate(0deg) }
+    }
+
+    @keyframes heartBeat {
+      0%, 100% { transform: scale(1) }
+      15% { transform: scale(1.18) }
+      30% { transform: scale(1) }
+    }
+
+    .lives-tag {
+      font-size: 12px;
+      color: var(--sun);
+      font-weight: 800
+    }
+
+    .go-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(13, 7, 36, .92);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 33px;
+      padding: 16px;
+      opacity: 1;
+      transition: opacity .25s ease;
+      pointer-events: auto
+    }
+
+    .go-overlay.hidden {
+      opacity: 0;
+      pointer-events: none
+    }
+
+    .go-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      text-align: center;
+      width: 100%;
+      max-width: 320px;
+      animation: popIn .32s cubic-bezier(.175, .885, .32, 1.275)
+    }
+
+    @keyframes popIn {
+      from { transform: scale(.8); opacity: 0 }
+      to { transform: scale(1); opacity: 1 }
+    }
+
+    .go-badge {
+      font-family: Bungee, sans-serif;
+      font-size: 26px;
+      color: var(--red);
+      text-shadow: 0 0 20px var(--red), 0 3px 0 rgba(0, 0, 0, .5);
+      letter-spacing: .04em
+    }
+
+    .go-title {
+      font-size: 13.5px;
+      color: #ffd2dd;
+      margin-top: -6px
+    }
+
+    .go-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      width: 100%;
+      background: rgba(255, 255, 255, .06);
+      border: 1px solid var(--bd);
+      border-radius: 14px;
+      padding: 10px
+    }
+
+    .go-grid div {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      text-align: center
+    }
+
+    .go-grid span {
+      font-size: 10.5px;
+      color: var(--mut)
+    }
+
+    .go-grid b {
+      font-family: Bungee, sans-serif;
+      font-size: 15px;
+      color: var(--sun)
+    }
+
+    .go-btns {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+      margin-top: 4px
+    }
+
+    .go-btns button {
+      padding: 11px 16px;
+      font-size: 14px;
+      width: 100%
+    }
+
     #intro {
       position: fixed;
       inset: 0;
@@ -649,6 +880,23 @@
       <p>Latih timing repair generator sampai refleksmu tajam.</p>
     </header>
 
+    <div class="mode-tabs">
+      <button class="mode-btn on" id="mPractice" data-mode="practice" type="button">🎯 Latihan</button>
+      <button class="mode-btn" id="mRanked" data-mode="ranked" type="button">🏆 Ranked <span class="badge-lives">3 ❤️</span></button>
+    </div>
+
+    <div class="lives-card" id="livesCard">
+      <div class="lives-info">
+        <span class="lives-label" id="livesLabel">Nyawa</span>
+        <div class="lives-hearts" id="livesHearts">
+          <span class="heart active">❤️</span>
+          <span class="heart active">❤️</span>
+          <span class="heart active">❤️</span>
+        </div>
+      </div>
+      <div class="lives-tag" id="livesTag">Mode Latihan: Santai &amp; Bebas</div>
+    </div>
+
     <div class="rank">
       <div><span>Pangkat</span><b id="rName">Pemula</b></div>
       <div class="bar"><i id="rBar"></i></div>
@@ -670,6 +918,22 @@
         <div class="center">
           <div id="idle"><b>Siap?</b><small>Tekan Mulai atau <kbd>Spasi</kbd></small></div>
           <div id="msg"></div>
+        </div>
+        <div id="gameover" class="go-overlay hidden">
+          <div class="go-box">
+            <div class="go-badge">GAME OVER</div>
+            <div class="go-title">Nyawa Kamu Telah Habis! 💔</div>
+            <div class="go-grid">
+              <div><span>Pangkat Akhir</span><b id="goRank">Pemula</b></div>
+              <div><span>Streak Run</span><b id="goStreak">0</b></div>
+              <div><span>Total Berhasil</span><b id="goHit">0</b></div>
+              <div><span>Akurasi</span><b id="goAcc">0%</b></div>
+            </div>
+            <div class="go-btns">
+              <button class="primary" id="goRetry">🔄 Main Lagi</button>
+              <button id="goPractice">🎯 Pindah ke Latihan</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -707,8 +971,12 @@
   <script>
     const $ = id => document.getElementById(id);
     const cv = $('c'), ctx = cv.getContext('2d'), C = cv.width / 2, RR = C - 70;
-    const S = { hit: 0, great: 0, miss: 0, streak: 0, best: 0 };
-    try { S.best = +localStorage.getItem('sc_best') || 0 } catch (e) { }
+    const S_practice = { hit: 0, great: 0, miss: 0, streak: 0, best: 0 };
+    const S_ranked = { hit: 0, great: 0, miss: 0, streak: 0, runBest: 0, best: 0, lives: 3 };
+    try { S_practice.best = +localStorage.getItem('sc_best') || 0 } catch (e) { }
+    try { S_ranked.best = +localStorage.getItem('sc_ranked_best') || 0 } catch (e) { }
+    let mode = 'practice';
+    let S = S_practice;
     let state = 'idle', needle = 0, zs = 0, zw = 36, gw = 8, speed = 240, D = 260, last = 0, timer = null, fx = null, parts = [];
     const RANKS = [[0, 'Pemula'], [5, 'Teknisi'], [10, 'Mekanik'], [20, 'Master Generator'], [35, 'Legenda 👑']];
 
@@ -737,13 +1005,34 @@
       cfg();
       document.querySelectorAll('#presets button').forEach(x => x.classList.toggle('on', x === b));
     });
+
+    function updateLivesUI() {
+      const card = $('livesCard');
+      const heartsWrap = $('livesHearts');
+      const tag = $('livesTag');
+      if (mode === 'practice') {
+        card.classList.remove('ranked');
+        heartsWrap.innerHTML = '<span style="font-size:15px;color:var(--lime);font-weight:900">∞ Santai</span>';
+        tag.textContent = 'Mode Latihan: Santai & Bebas';
+      } else {
+        card.classList.add('ranked');
+        let html = '';
+        for (let i = 0; i < 3; i++) {
+          html += i < S_ranked.lives ? '<span class="heart active">❤️</span>' : '<span class="heart lost">💔</span>';
+        }
+        heartsWrap.innerHTML = html;
+        tag.textContent = S_ranked.lives > 0 ? `Mode Ranked: ${S_ranked.lives} Nyawa Tersisa` : 'Mode Ranked: Game Over!';
+      }
+    }
+
     function stats() {
       $('sHit').textContent = S.hit; $('sGreat').textContent = S.great; $('sMiss').textContent = S.miss;
       $('sStreak').textContent = S.streak; $('sBest').textContent = S.best;
       const t = S.hit + S.miss; $('sAcc').textContent = t ? Math.round(S.hit / t * 100) + '%' : '-';
-      let r = 0; RANKS.forEach((x, i) => { if (S.streak >= x[0]) r = i });
+      const streakForRank = mode === 'ranked' ? (S.runBest || S.streak) : S.streak;
+      let r = 0; RANKS.forEach((x, i) => { if (streakForRank >= x[0]) r = i });
       const nx = RANKS[r + 1]; $('rName').textContent = RANKS[r][1];
-      $('rBar').style.width = nx ? ((S.streak - RANKS[r][0]) / (nx[0] - RANKS[r][0]) * 100) + '%' : '100%';
+      $('rBar').style.width = nx ? ((streakForRank - RANKS[r][0]) / (nx[0] - RANKS[r][0]) * 100) + '%' : '100%';
       $('rHint').textContent = nx ? 'Streak ' + nx[0] + ' untuk jadi ' + nx[1] : 'Pangkat tertinggi tercapai!';
     }
     const rad = d => (d - 90) * Math.PI / 180, norm = a => ((a % 360) + 360) % 360;
@@ -795,7 +1084,6 @@
           ctx.shadowBlur = 0; ctx.globalAlpha = 1;
         }
       } else if (fx) fx = null;
-      // partikel konfeti
       parts = parts.filter(p => p.l > 0);
       parts.forEach(p => { p.x += p.vx; p.y += p.vy; p.vy += .25; p.l -= .025; ctx.globalAlpha = Math.max(p.l, 0); ctx.fillStyle = p.c; ctx.fillRect(p.x, p.y, p.s, p.s) });
       ctx.globalAlpha = 1;
@@ -823,17 +1111,84 @@
     }
     function press() {
       audio();
-      if (state === 'idle') { begin(); return }
+      if (state === 'gameover') { resetRankedRun(); begin(); return; }
+      if (state === 'idle') { begin(); return; }
       if (state !== 'running') return;
       const rel = (needle - zs + 360) % 360;
       if (rel <= zw) rel >= zw - gw && gw > 0 ? result('great', 'GREAT!') : result('hit', 'BAGUS!');
       else result('miss', 'MELESET');
     }
+    function gameOver() {
+      clearTimeout(timer);
+      state = 'gameover';
+      zs = null;
+      $('idle').style.opacity = 0;
+      $('start').textContent = '▶ Mulai';
+      let r = 0;
+      const finalStreak = S_ranked.runBest || 0;
+      RANKS.forEach((x, i) => { if (finalStreak >= x[0]) r = i });
+      $('goRank').textContent = RANKS[r][1];
+      $('goStreak').textContent = finalStreak;
+      $('goHit').textContent = S_ranked.hit;
+      const t = S_ranked.hit + S_ranked.miss;
+      $('goAcc').textContent = t ? Math.round(S_ranked.hit / t * 100) + '%' : '0%';
+      const m = $('msg'); m.classList.remove('go');
+      $('gameover').classList.remove('hidden');
+    }
+    function resetRankedRun() {
+      S_ranked.hit = 0;
+      S_ranked.great = 0;
+      S_ranked.miss = 0;
+      S_ranked.streak = 0;
+      S_ranked.runBest = 0;
+      S_ranked.lives = 3;
+      $('hist').innerHTML = '';
+      $('gameover').classList.add('hidden');
+      updateLivesUI();
+      stats();
+    }
+    function setMode(newMode) {
+      if (mode === newMode && state !== 'gameover') return;
+      mode = newMode;
+      stop();
+      $('gameover').classList.add('hidden');
+      $('hist').innerHTML = '';
+      if (mode === 'ranked') {
+        S = S_ranked;
+        resetRankedRun();
+      } else {
+        S = S_practice;
+        updateLivesUI();
+        stats();
+      }
+      $('mPractice').classList.toggle('on', mode === 'practice');
+      $('mRanked').classList.toggle('on', mode === 'ranked');
+    }
     function result(k, txt) {
       state = 'wait'; burst(k);
       const col = k === 'miss' ? '#ff3d5a' : k === 'great' ? '#ffd23d' : '#b6ff3d';
-      if (k === 'miss') { S.miss++; S.streak = 0; const st = $('stage'); st.classList.remove('shake'); void st.offsetWidth; if (D > 0) st.classList.add('shake') }
-      else { S.hit++; S.streak++; if (k === 'great') S.great++; if (S.streak > S.best) { S.best = S.streak; try { localStorage.setItem('sc_best', S.best) } catch (e) { } } }
+      if (k === 'miss') {
+        S.miss++; S.streak = 0;
+        const st = $('stage'); st.classList.remove('shake'); void st.offsetWidth; if (D > 0) st.classList.add('shake');
+        if (mode === 'ranked') {
+          S.lives--;
+          updateLivesUI();
+          if (S.lives <= 0) {
+            fx = { t: performance.now(), c: col }; zs = null;
+            beep('gameover');
+            stats();
+            gameOver();
+            return;
+          }
+        }
+      } else {
+        S.hit++; S.streak++; if (k === 'great') S.great++;
+        if (mode === 'ranked' && S.streak > S.runBest) S.runBest = S.streak;
+        if (S.streak > S.best) {
+          S.best = S.streak;
+          try { localStorage.setItem(mode === 'ranked' ? 'sc_ranked_best' : 'sc_best', S.best) } catch (e) { }
+        }
+      }
       fx = { t: performance.now(), c: col }; zs = null;
       const m = $('msg'); m.classList.remove('go');
       if (D > 0) { m.textContent = txt; m.style.color = col; void m.offsetWidth; m.classList.add('go') }
@@ -841,13 +1196,37 @@
       while ($('hist').children.length > 14) $('hist').firstChild.remove();
       beep(k); stats(); schedule();
     }
-    function begin() { state = 'wait'; $('idle').style.opacity = 0; $('start').textContent = '■ Berhenti'; schedule() }
+    function begin() {
+      if (mode === 'ranked' && S_ranked.lives <= 0) resetRankedRun();
+      $('gameover').classList.add('hidden');
+      state = 'wait'; $('idle').style.opacity = 0; $('start').textContent = '■ Berhenti'; schedule();
+    }
     function stop() { clearTimeout(timer); state = 'idle'; zs = null; $('idle').style.opacity = 1; $('start').textContent = '▶ Mulai' }
-    $('start').addEventListener('click', () => { audio(); state === 'idle' ? begin() : stop() });
-    $('reset').addEventListener('click', () => { S.hit = S.great = S.miss = S.streak = 0; $('hist').innerHTML = ''; stats() });
+    $('start').addEventListener('click', () => {
+      audio();
+      if (state === 'gameover') { resetRankedRun(); begin(); return; }
+      state === 'idle' ? begin() : stop();
+    });
+    $('reset').addEventListener('click', () => {
+      if (mode === 'ranked') resetRankedRun();
+      else { S.hit = S.great = S.miss = S.streak = 0; $('hist').innerHTML = ''; stats(); }
+    });
+    $('mPractice').addEventListener('click', () => { audio(); setMode('practice'); });
+    $('mRanked').addEventListener('click', () => { audio(); setMode('ranked'); });
+    $('goRetry').addEventListener('click', () => { audio(); resetRankedRun(); begin(); });
+    $('goPractice').addEventListener('click', () => { audio(); setMode('practice'); });
+    $('gameover').addEventListener('pointerdown', e => e.stopPropagation());
     $('stage').addEventListener('pointerdown', e => { e.preventDefault(); press() });
     $('go').addEventListener('click', () => { audio(); $('intro').classList.add('out'); setTimeout(() => { if (state === 'idle') begin() }, 350) });
-    addEventListener('keydown', e => { if (e.code === 'Space') { e.preventDefault(); if (e.repeat) return; if ($('intro').classList.contains('out')) press(); else $('go').click() } });
+    addEventListener('keydown', e => {
+      if (e.code === 'Space') {
+        e.preventDefault();
+        if (e.repeat) return;
+        if (!$('intro').classList.contains('out')) { $('go').click(); return; }
+        if (state === 'gameover') { resetRankedRun(); begin(); return; }
+        press();
+      }
+    });
 
     let AC = null;
     function audio() { try { if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === 'suspended') AC.resume() } catch (e) { } }
@@ -860,9 +1239,14 @@
       if (!$('snd').checked) return;
       if (k === 'miss') tone(110, 0, .22, 'sawtooth', .1);
       else if (k === 'great') { tone(880, 0, .08); tone(1320, .07, .12) }
+      else if (k === 'gameover') {
+        tone(220, 0, .18, 'sawtooth', .12);
+        tone(165, .15, .22, 'sawtooth', .14);
+        tone(110, .32, .45, 'sawtooth', .16);
+      }
       else tone(660, 0, .1)
     }
-    cfg(); stats();
+    cfg(); updateLivesUI(); stats();
   </script>
 </body>
 
