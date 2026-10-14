@@ -186,6 +186,44 @@
       text-shadow: 0 0 14px rgba(255, 210, 61, .6)
     }
 
+    .rank-header-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .r-diff-tag {
+      display: none;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 99px;
+      background: rgba(25, 227, 255, .15);
+      color: var(--cyan);
+      border: 1px solid rgba(25, 227, 255, .35);
+      letter-spacing: .2px;
+      transition: all .25s ease;
+    }
+
+    .r-diff-tag.danger {
+      background: rgba(255, 61, 90, .2);
+      color: #ff5c7a;
+      border-color: rgba(255, 61, 90, .5);
+      box-shadow: 0 0 10px rgba(255, 61, 90, .3);
+    }
+
+    @keyframes tierFlash {
+      0% { box-shadow: 0 0 0 0 rgba(25, 227, 255, .8); }
+      50% { box-shadow: 0 0 40px 12px rgba(255, 61, 154, .85); }
+      100% { box-shadow: 0 0 0 0 rgba(25, 227, 255, 0); }
+    }
+
+    .stage.tier-up {
+      animation: tierFlash .65s ease-out;
+    }
+
     .bar {
       height: 12px;
       border-radius: 99px;
@@ -1447,6 +1485,13 @@
       .rank b {
         font-size: 13.5px;
       }
+      .rank-header-right {
+        gap: 6px;
+      }
+      .r-diff-tag {
+        font-size: 10px;
+        padding: 1px 6px;
+      }
       .bar {
         height: 10px;
       }
@@ -1664,7 +1709,7 @@
     </div>
 
     <div class="rank">
-      <div><span>Pangkat</span><b id="rName">Pemula</b></div>
+      <div><span>Pangkat</span><div class="rank-header-right"><span class="r-diff-tag" id="rDiffTag">⚡ 240°/s • Zona 36°</span><b id="rName">Pemula</b></div></div>
       <div class="bar"><i id="rBar"></i></div>
       <div><span id="rHint">Streak 5 untuk naik pangkat</span></div>
     </div>
@@ -1716,13 +1761,13 @@
     </div>
 
     <div class="panel" id="settingsPanel">
-      <div class="panel-locked-notice">🔒 Mode Ranked Aktif — Pengaturan Dikunci ke Standar Kompetitif</div>
+      <div class="panel-locked-notice">⚡ Mode Ranked Dinamis: Kecepatan jarum naik &amp; zona makin sempit tiap streak bertambah!</div>
       <h2>Preset</h2>
       <div class="presets" id="presets">
         <button data-p="160,48,10,12,320" style="--pc:var(--lime)">Santai</button>
         <button data-p="240,36,8,8,260" class="on" style="--pc:var(--cyan)">Normal</button>
-        <button data-p="340,32,6,6,200" style="--pc:var(--sun)">Sulit</button>
-        <button data-p="460,26,4,4,140" style="--pc:var(--pink)">Hardcore</button>
+        <button data-p="340,32,6,3,200" style="--pc:var(--sun)">Sulit</button>
+        <button data-p="460,26,4,2,140" style="--pc:var(--pink)">Hardcore</button>
       </div>
       <h2>Pengaturan</h2>
       <div class="row"><label for="speed">Kecepatan jarum</label><input type="range" id="speed" min="120" max="520"
@@ -1813,12 +1858,68 @@
     const cv = $('c'), ctx = cv.getContext('2d'), C = cv.width / 2, RR = C - 70;
     const S_practice = { hit: 0, great: 0, miss: 0, streak: 0, best: 0 };
     const S_ranked = { hit: 0, great: 0, miss: 0, streak: 0, runBest: 0, best: 0, lives: 3 };
+    let practiceSettings = { speed: 240, zone: 36, great: 8, gap: 8, anim: 260 };
     try { S_practice.best = +localStorage.getItem('sc_best') || 0 } catch (e) { }
     try { S_ranked.best = +localStorage.getItem('sc_ranked_best') || 0 } catch (e) { }
     let mode = 'practice';
     let S = S_practice;
     let state = 'idle', needle = 0, zs = 0, zw = 36, gw = 8, speed = 240, D = 260, last = 0, timer = null, fx = null, parts = [];
-    const RANKS = [[0, 'Pemula'], [5, 'Teknisi'], [10, 'Mekanik'], [20, 'Master Generator'], [35, 'Legenda 👑']];
+    const RANKS = [[0, 'Pemula'], [5, 'Teknisi'], [10, 'Mekanik'], [20, 'Master Generator'], [35, 'Legenda 👑'], [50, 'Legenda Abadi 👑🔥']];
+
+    function getRankedDifficulty(streak = 0) {
+      let tierIndex = 0;
+      let spd = 240;
+      let zone = 36;
+      let great = 8;
+      let gap = 800; // ms
+
+      if (streak < 5) {
+        tierIndex = 0;
+        spd = 240 + streak * 6;
+        zone = 36;
+        great = 8;
+        gap = 800;
+      } else if (streak < 10) {
+        tierIndex = 1;
+        spd = 280 + (streak - 5) * 6;
+        zone = 32;
+        great = 7;
+        gap = 700;
+      } else if (streak < 20) {
+        tierIndex = 2;
+        spd = 330 + (streak - 10) * 5;
+        zone = 28;
+        great = 6;
+        gap = 620;
+      } else if (streak < 35) {
+        tierIndex = 3;
+        spd = 385 + (streak - 20) * 3;
+        zone = 24;
+        great = 5;
+        gap = 520;
+      } else if (streak < 50) {
+        tierIndex = 4;
+        spd = 440 + (streak - 35) * 2;
+        zone = 20;
+        great = 4;
+        gap = 440;
+      } else {
+        tierIndex = 5;
+        spd = Math.min(520, 485 + (streak - 50) * 1.5);
+        zone = Math.max(16, 18 - Math.floor((streak - 50) / 10));
+        great = 4;
+        gap = Math.max(340, 380 - (streak - 50) * 2);
+      }
+
+      return {
+        tierIndex,
+        title: RANKS[tierIndex] ? RANKS[tierIndex][1] : 'Legenda 👑',
+        speed: Math.round(spd),
+        zone: Math.round(zone),
+        great: Math.round(great),
+        gap: Math.round(gap)
+      };
+    }
 
     function cfg() {
       speed = +$('speed').value; D = +$('anim').value;
@@ -1861,7 +1962,10 @@
           html += i < S_ranked.lives ? '<span class="heart active">❤️</span>' : '<span class="heart lost">💔</span>';
         }
         heartsWrap.innerHTML = html;
-        tag.textContent = S_ranked.lives > 0 ? `Mode Ranked: ${S_ranked.lives} Nyawa Tersisa` : 'Mode Ranked: Game Over!';
+        const curDiff = getRankedDifficulty(S_ranked.streak);
+        tag.textContent = S_ranked.lives > 0 
+          ? `Ranked: ${S_ranked.lives} Nyawa • Tier ${curDiff.tierIndex + 1}` 
+          : 'Mode Ranked: Game Over!';
       }
     }
 
@@ -1873,7 +1977,29 @@
       let r = 0; RANKS.forEach((x, i) => { if (streakForRank >= x[0]) r = i });
       const nx = RANKS[r + 1]; $('rName').textContent = RANKS[r][1];
       $('rBar').style.width = nx ? ((streakForRank - RANKS[r][0]) / (nx[0] - RANKS[r][0]) * 100) + '%' : '100%';
-      $('rHint').textContent = nx ? 'Streak ' + nx[0] + ' untuk jadi ' + nx[1] : 'Pangkat tertinggi tercapai!';
+
+      const tag = $('rDiffTag');
+      if (mode === 'ranked') {
+        const curDiff = getRankedDifficulty(S.streak);
+        if (tag) {
+          tag.style.display = 'inline-flex';
+          tag.textContent = `⚡ ${curDiff.speed}°/s • Zona ${curDiff.zone}°`;
+          tag.classList.toggle('danger', curDiff.speed >= 380);
+        }
+        $('rHint').textContent = nx ? `Streak ${nx[0]} untuk jadi ${nx[1]} (Speed & tantangan naik!)` : 'Pangkat puncak tercapai! Refleks tingkat dewa!';
+        
+        $('speed').value = curDiff.speed;
+        $('zone').value = curDiff.zone;
+        $('great').value = curDiff.great;
+        $('gap').value = Math.max(3, Math.round(curDiff.gap / 100));
+        $('speedV').textContent = curDiff.speed + '°/s';
+        $('zoneV').textContent = curDiff.zone + '°';
+        $('greatV').textContent = curDiff.great + '°';
+        $('gapV').textContent = (curDiff.gap / 1000).toFixed(1) + 's';
+      } else {
+        if (tag) tag.style.display = 'none';
+        $('rHint').textContent = nx ? 'Streak ' + nx[0] + ' untuk jadi ' + nx[1] : 'Pangkat tertinggi tercapai!';
+      }
     }
     const rad = d => (d - 90) * Math.PI / 180, norm = a => ((a % 360) + 360) % 360;
 
@@ -1940,14 +2066,24 @@
       for (let i = 0; i < n; i++) { const an = Math.random() * 6.283, v = 3 + Math.random() * 7; parts.push({ x, y, vx: Math.cos(an) * v, vy: Math.sin(an) * v - 3, l: 1, s: 6 + Math.random() * 9, c: cols[i % cols.length] }) }
     }
     function spawn() {
-      zw = +$('zone').value; gw = Math.min(+$('great').value, zw);
+      if (mode === 'ranked') {
+        const diff = getRankedDifficulty(S.streak);
+        speed = diff.speed;
+        zw = diff.zone;
+        gw = diff.great;
+      } else {
+        speed = +$('speed').value;
+        zw = +$('zone').value;
+        gw = Math.min(+$('great').value, zw);
+      }
       zs = norm(60 + Math.random() * 240);
       needle = norm(zs - 100 - Math.random() * 70);
       last = performance.now(); state = 'running';
     }
     function schedule() {
-      clearTimeout(timer); const g = +$('gap').value * 100;
-      timer = setTimeout(() => { if (state === 'wait') spawn() }, g + Math.random() * g);
+      clearTimeout(timer);
+      const g = mode === 'ranked' ? getRankedDifficulty(S.streak).gap : +$('gap').value * 100;
+      timer = setTimeout(() => { if (state === 'wait') spawn() }, g + Math.random() * (g * 0.7));
     }
     function press() {
       audio();
@@ -1968,7 +2104,8 @@
       const finalStreak = S_ranked.runBest || 0;
       RANKS.forEach((x, i) => { if (finalStreak >= x[0]) r = i });
       const finalRankTitle = RANKS[r][1];
-      $('goRank').textContent = finalRankTitle;
+      const maxDiff = getRankedDifficulty(finalStreak);
+      $('goRank').innerHTML = `${finalRankTitle} <span style="font-size:11px;color:var(--cyan);display:block;font-weight:700">⚡ Puncak ${maxDiff.speed}°/s</span>`;
       $('goStreak').textContent = finalStreak;
       $('goHit').textContent = S_ranked.hit;
       const t = S_ranked.hit + S_ranked.miss;
@@ -2042,16 +2179,28 @@
       $('hist').innerHTML = '';
       const panel = $('settingsPanel');
       if (mode === 'ranked') {
+        // Simpan konfigurasi latihan saat ini
+        practiceSettings = {
+          speed: +$('speed').value,
+          zone: +$('zone').value,
+          great: +$('great').value,
+          gap: +$('gap').value,
+          anim: +$('anim').value
+        };
         S = S_ranked;
         resetRankedRun();
         if (panel) panel.classList.add('panel-locked');
-        // Kunci pengaturan ke standar kompetitif (Preset Normal: 240°/s, 36°, 8°, 0.8s, 260ms)
-        $('speed').value = 240; $('zone').value = 36; $('great').value = 8; $('gap').value = 8; $('anim').value = 260;
-        cfg();
-        syncPreset();
       } else {
         S = S_practice;
         if (panel) panel.classList.remove('panel-locked');
+        // Kembalikan konfigurasi latihan
+        $('speed').value = practiceSettings.speed;
+        $('zone').value = practiceSettings.zone;
+        $('great').value = practiceSettings.great;
+        $('gap').value = practiceSettings.gap;
+        $('anim').value = practiceSettings.anim;
+        cfg();
+        syncPreset();
         updateLivesUI();
         stats();
       }
@@ -2062,6 +2211,7 @@
     function result(k, txt) {
       state = 'wait'; burst(k);
       const col = k === 'miss' ? '#ff3d5a' : k === 'great' ? '#ffd23d' : '#b6ff3d';
+      let isLevelUp = false;
       if (k === 'miss') {
         S.miss++; S.streak = 0;
         const st = $('stage'); st.classList.remove('shake'); void st.offsetWidth; if (D > 0) st.classList.add('shake');
@@ -2077,8 +2227,21 @@
           }
         }
       } else {
+        const prevTier = mode === 'ranked' ? getRankedDifficulty(S.streak).tierIndex : 0;
         S.hit++; S.streak++; if (k === 'great') S.great++;
-        if (mode === 'ranked' && S.streak > S.runBest) S.runBest = S.streak;
+        if (mode === 'ranked') {
+          if (S.streak > S.runBest) S.runBest = S.streak;
+          const curDiff = getRankedDifficulty(S.streak);
+          if (curDiff.tierIndex > prevTier) {
+            isLevelUp = true;
+            txt = `⚡ NAIK RANK: ${curDiff.title.toUpperCase()}!`;
+            const st = $('stage');
+            st.classList.remove('tier-up');
+            void st.offsetWidth;
+            st.classList.add('tier-up');
+            beep('levelup');
+          }
+        }
         if (S.streak > S.best) {
           S.best = S.streak;
           try { localStorage.setItem(mode === 'ranked' ? 'sc_ranked_best' : 'sc_best', S.best) } catch (e) { }
@@ -2089,7 +2252,12 @@
       if (D > 0) { m.textContent = txt; m.style.color = col; void m.offsetWidth; m.classList.add('go') }
       const d = document.createElement('i'); d.className = 'dot'; d.style.background = col; d.style.color = col; $('hist').appendChild(d);
       while ($('hist').children.length > 14) $('hist').firstChild.remove();
-      beep(k); stats(); schedule();
+      if (!isLevelUp) {
+        beep(k);
+      }
+      updateLivesUI();
+      stats();
+      schedule();
     }
 
     function begin() {
@@ -2632,6 +2800,12 @@
       if (!$('snd').checked) return;
       if (k === 'miss') tone(110, 0, .22, 'sawtooth', .1);
       else if (k === 'great') { tone(880, 0, .08); tone(1320, .07, .12) }
+      else if (k === 'levelup') {
+        tone(523, 0, .08, 'sine', .14);
+        tone(659, .07, .08, 'sine', .16);
+        tone(784, .14, .1, 'sine', .18);
+        tone(1046, .22, .22, 'sine', .22);
+      }
       else if (k === 'gameover') {
         tone(220, 0, .18, 'sawtooth', .12);
         tone(165, .15, .22, 'sawtooth', .14);
