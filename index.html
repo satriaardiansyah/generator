@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Nunito:wght@600;800;900&display=swap"
     rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
       box-sizing: border-box;
@@ -851,6 +852,472 @@
       animation: pulse 1.2s ease-in-out infinite;
     }
 
+    /* User Bar */
+    .user-bar {
+      width: 100%;
+      background: var(--card);
+      border: 2px solid var(--bd);
+      border-radius: 18px;
+      padding: 9px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      min-width: 0;
+    }
+    .user-avatar {
+      font-size: 19px;
+      line-height: 1;
+      background: rgba(255, 255, 255, .1);
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--bd);
+      flex-shrink: 0;
+    }
+    .user-text {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+    .user-name {
+      font-weight: 900;
+      font-size: 13.5px;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .user-role {
+      font-size: 11px;
+      color: var(--mut);
+    }
+    .user-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .u-btn {
+      font-size: 11.5px;
+      font-weight: 800;
+      padding: 6px 10px;
+      border-radius: 12px;
+      border: 1px solid var(--bd);
+      background: rgba(255, 255, 255, .06);
+      color: var(--fg);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all .15s ease;
+    }
+    .u-btn:hover {
+      background: rgba(255, 255, 255, .15);
+      transform: translateY(-1px);
+    }
+    .u-btn-accent {
+      background: linear-gradient(135deg, rgba(25, 227, 255, .25), rgba(138, 92, 255, .35));
+      border-color: var(--cyan);
+      color: #fff;
+    }
+    .u-btn-danger {
+      border-color: rgba(255, 61, 90, .35);
+      color: #ff9dae;
+    }
+    .u-btn-danger:hover {
+      background: rgba(255, 61, 90, .25);
+      color: #fff;
+    }
+
+    /* Modal System */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: rgba(10, 5, 28, .84);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      transition: opacity .25s ease;
+    }
+    .modal-overlay.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .modal-card {
+      width: 100%;
+      max-width: 420px;
+      max-height: 88vh;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      background: radial-gradient(circle at 50% 0%, #291254, #12092c 80%);
+      border: 2px solid rgba(255, 255, 255, .18);
+      border-radius: 26px;
+      padding: 20px;
+      box-shadow: 0 0 60px -10px rgba(138, 92, 255, .5), 0 20px 40px rgba(0, 0, 0, .7);
+      overflow-y: auto;
+      animation: popIn .25s cubic-bezier(.175, .885, .32, 1.275);
+    }
+    .modal-wide {
+      max-width: 480px;
+    }
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .modal-title {
+      margin: 0;
+      font-family: Bungee, sans-serif;
+      font-size: 19px;
+      color: var(--sun);
+      letter-spacing: .02em;
+      text-shadow: 0 0 16px rgba(255, 210, 61, .5);
+    }
+    .modal-close {
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .08);
+      border: 1px solid var(--bd);
+      color: #fff;
+      font-size: 20px;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .modal-close:hover {
+      background: rgba(255, 61, 90, .25);
+      border-color: var(--red);
+      transform: scale(1.08);
+    }
+    .modal-desc {
+      margin: -6px 0 0;
+      font-size: 13px;
+      color: var(--mut);
+      line-height: 1.4;
+    }
+
+    /* Tab Group */
+    .tab-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      background: rgba(0, 0, 0, .3);
+      padding: 4px;
+      border-radius: 14px;
+      border: 1px solid var(--bd);
+    }
+    .tab-btn {
+      padding: 9px 12px;
+      font-family: Bungee, sans-serif;
+      font-size: 12px;
+      color: var(--mut);
+      background: transparent;
+      border: 0;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all .18s ease;
+    }
+    .tab-btn.active {
+      background: rgba(255, 255, 255, .12);
+      color: #fff;
+      box-shadow: 0 0 12px -2px rgba(25, 227, 255, .4);
+    }
+
+    /* Forms */
+    .auth-form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .form-label {
+      font-size: 12px;
+      color: var(--mut);
+      font-weight: 800;
+    }
+    .form-input {
+      width: 100%;
+      padding: 11px 14px;
+      font: inherit;
+      font-size: 14px;
+      color: #fff;
+      background: rgba(255, 255, 255, .06);
+      border: 1.5px solid var(--bd);
+      border-radius: 12px;
+      transition: border-color .15s ease, box-shadow .15s ease;
+    }
+    .form-input:focus {
+      outline: none;
+      border-color: var(--cyan);
+      box-shadow: 0 0 14px rgba(25, 227, 255, .35);
+      background: rgba(255, 255, 255, .1);
+    }
+    .auth-submit {
+      width: 100%;
+      margin-top: 4px;
+      padding: 13px;
+      font-size: 15px;
+    }
+    .alert-box {
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-size: 12.5px;
+      line-height: 1.35;
+    }
+    .alert-error {
+      background: rgba(255, 61, 90, .2);
+      border: 1px solid var(--red);
+      color: #ffb4c0;
+    }
+    .alert-success {
+      background: rgba(182, 255, 61, .2);
+      border: 1px solid var(--lime);
+      color: #e4ffb0;
+    }
+    .alert-info {
+      background: rgba(25, 227, 255, .2);
+      border: 1px solid var(--cyan);
+      color: #c9f7ff;
+    }
+
+    /* Match History Cards */
+    .hist-list, .lb-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 52vh;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+    .hist-card {
+      background: rgba(255, 255, 255, .05);
+      border: 1.5px solid var(--bd);
+      border-radius: 14px;
+      padding: 11px 13px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      transition: transform .12s ease;
+    }
+    .hist-card:hover {
+      background: rgba(255, 255, 255, .08);
+      transform: translateY(-1px);
+    }
+    .hist-card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11.5px;
+    }
+    .hist-time {
+      color: var(--mut);
+    }
+    .hist-rank-badge {
+      font-family: Bungee, sans-serif;
+      font-size: 11px;
+      color: var(--sun);
+      background: rgba(255, 210, 61, .15);
+      padding: 2px 7px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 210, 61, .3);
+    }
+    .hist-card-body {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr 1.3fr;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+    }
+    .hist-metric {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .hist-metric .lbl {
+      font-size: 10px;
+      color: var(--mut);
+    }
+    .hist-metric .val {
+      font-family: Bungee, sans-serif;
+      font-size: 14px;
+    }
+    .streak-val {
+      color: var(--cyan);
+    }
+    .acc-val {
+      color: var(--lime);
+    }
+    .val-detail {
+      font-size: 11px;
+      color: #fff;
+      white-space: nowrap;
+    }
+
+    /* Leaderboard Items */
+    .lb-item {
+      display: grid;
+      grid-template-columns: 36px 1fr auto;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 255, 255, .05);
+      border: 1.5px solid var(--bd);
+      border-radius: 14px;
+      padding: 10px 12px;
+      transition: all .15s ease;
+    }
+    .lb-item.top-1 {
+      border-color: var(--sun);
+      background: radial-gradient(circle at 10% 50%, rgba(255, 210, 61, .15), rgba(255, 255, 255, .06));
+      box-shadow: 0 0 16px -4px rgba(255, 210, 61, .4);
+    }
+    .lb-item.top-2 {
+      border-color: #cbd5e1;
+      background: radial-gradient(circle at 10% 50%, rgba(203, 213, 225, .15), rgba(255, 255, 255, .06));
+    }
+    .lb-item.top-3 {
+      border-color: #f97316;
+      background: radial-gradient(circle at 10% 50%, rgba(249, 115, 22, .15), rgba(255, 255, 255, .06));
+    }
+    .lb-item.is-me {
+      border-color: var(--pink);
+      background: rgba(255, 61, 154, .12);
+      box-shadow: 0 0 18px -4px rgba(255, 61, 154, .5);
+    }
+    .lb-pos {
+      font-family: Bungee, sans-serif;
+      font-size: 15px;
+      text-align: center;
+    }
+    .lb-user-wrap {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+    .lb-username {
+      font-weight: 800;
+      font-size: 13.5px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .lb-badge-me {
+      font-family: Nunito, sans-serif;
+      font-size: 9.5px;
+      font-weight: 900;
+      color: #fff;
+      background: var(--pink);
+      padding: 1px 5px;
+      border-radius: 99px;
+    }
+    .lb-meta {
+      font-size: 11px;
+      color: var(--mut);
+    }
+    .lb-stat {
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 1px;
+    }
+    .lb-stat-val {
+      font-family: Bungee, sans-serif;
+      font-size: 15px;
+      color: var(--cyan);
+    }
+    .lb-stat-lbl {
+      font-size: 10px;
+      color: var(--mut);
+    }
+
+    /* Game Over Extra UI */
+    .go-save-status {
+      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 8px;
+      margin-top: -4px;
+      min-height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .go-save-status .saving {
+      color: var(--cyan);
+    }
+    .go-save-status .saved {
+      color: var(--lime);
+      font-weight: 800;
+    }
+    .go-save-status .save-err {
+      color: var(--red);
+    }
+    .go-row-btns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      width: 100%;
+    }
+    .empty-state {
+      text-align: center;
+      padding: 24px 12px;
+      color: var(--mut);
+      font-size: 13px;
+    }
+    .loading-state {
+      text-align: center;
+      padding: 24px 12px;
+      color: var(--cyan);
+      font-size: 13px;
+    }
+    .panel.panel-locked {
+      opacity: .65;
+      pointer-events: none;
+      position: relative;
+    }
+    .panel-locked-notice {
+      display: none;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--sun);
+      background: rgba(255, 210, 61, .15);
+      border: 1px solid rgba(255, 210, 61, .3);
+      padding: 5px 10px;
+      border-radius: 10px;
+      text-align: center;
+    }
+    .panel.panel-locked .panel-locked-notice {
+      display: block;
+    }
+
     @media(prefers-reduced-motion:reduce) {
       * {
         animation-duration: .01ms !important;
@@ -879,6 +1346,21 @@
       <h1>Skill Check Trainer</h1>
       <p>Latih timing repair generator sampai refleksmu tajam.</p>
     </header>
+
+    <div class="user-bar" id="userBar">
+      <div class="user-info">
+        <span class="user-avatar" id="uAvatar">👤</span>
+        <div class="user-text">
+          <span class="user-name" id="uName">Tamu</span>
+          <span class="user-role" id="uStatus">Belum masuk</span>
+        </div>
+      </div>
+      <div class="user-actions">
+        <button class="u-btn" id="btnLeaderboard" type="button" title="Lihat Peringkat">🏆 Leaderboard</button>
+        <button class="u-btn" id="btnHistory" type="button" title="Riwayat Pertandingan" style="display:none">📜 Riwayat</button>
+        <button class="u-btn u-btn-accent" id="btnAuth" type="button">🔑 Masuk</button>
+      </div>
+    </div>
 
     <div class="mode-tabs">
       <button class="mode-btn on" id="mPractice" data-mode="practice" type="button">🎯 Latihan</button>
@@ -923,6 +1405,7 @@
           <div class="go-box">
             <div class="go-badge">GAME OVER</div>
             <div class="go-title">Nyawa Kamu Telah Habis! 💔</div>
+            <div id="goSaveStatus" class="go-save-status"></div>
             <div class="go-grid">
               <div><span>Pangkat Akhir</span><b id="goRank">Pemula</b></div>
               <div><span>Streak Run</span><b id="goStreak">0</b></div>
@@ -931,6 +1414,10 @@
             </div>
             <div class="go-btns">
               <button class="primary" id="goRetry">🔄 Main Lagi</button>
+              <div class="go-row-btns">
+                <button id="goHistory" type="button">📜 Riwayat</button>
+                <button id="goLeaderboard" type="button">🏆 Leaderboard</button>
+              </div>
               <button id="goPractice">🎯 Pindah ke Latihan</button>
             </div>
           </div>
@@ -944,7 +1431,8 @@
       <button id="reset">Reset</button>
     </div>
 
-    <div class="panel">
+    <div class="panel" id="settingsPanel">
+      <div class="panel-locked-notice">🔒 Mode Ranked Aktif — Pengaturan Dikunci ke Standar Kompetitif</div>
       <h2>Preset</h2>
       <div class="presets" id="presets">
         <button data-p="160,48,10,12,320" style="--pc:var(--lime)">Santai</button>
@@ -966,6 +1454,74 @@
       <label class="tog">Suara efek <input type="checkbox" id="snd" checked></label>
     </div>
     <div class="foot">Tekan <kbd>Spasi</kbd> / klik / tap saat jarum pink ada di zona putih.</div>
+
+    <!-- Modal Auth (Login / Register) -->
+    <div id="authModal" class="modal-overlay hidden">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3 class="modal-title">🏆 Mode Ranked</h3>
+          <button class="modal-close" id="authClose" type="button">&times;</button>
+        </div>
+        <p class="modal-desc">Masuk atau daftar untuk mencatat rekor ke riwayat pertandingan dan bersaing di Leaderboard global!</p>
+        <div class="tab-group">
+          <button class="tab-btn active" id="tabLogin" type="button">Masuk</button>
+          <button class="tab-btn" id="tabRegister" type="button">Daftar Akun</button>
+        </div>
+        <div id="authAlert" class="alert-box" style="display:none"></div>
+        
+        <!-- Form Login -->
+        <form id="formLogin" class="auth-form" onsubmit="return false;">
+          <div class="form-group">
+            <label class="form-label" for="loginUsername">Username</label>
+            <input class="form-input" id="loginUsername" type="text" placeholder="Masukkan username kamu" autocomplete="username" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="loginPass">Password</label>
+            <input class="form-input" id="loginPass" type="password" placeholder="••••••••" autocomplete="current-password" required>
+          </div>
+          <button class="primary auth-submit" id="submitLogin" type="submit">▶ Masuk &amp; Main</button>
+        </form>
+
+        <!-- Form Register -->
+        <form id="formRegister" class="auth-form" style="display:none" onsubmit="return false;">
+          <div class="form-group">
+            <label class="form-label" for="regUsername">Username</label>
+            <input class="form-input" id="regUsername" type="text" placeholder="Pilih username unik" maxlength="20" autocomplete="username" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="regPass">Password (min 6 karakter)</label>
+            <input class="form-input" id="regPass" type="password" placeholder="Minimal 6 karakter" minlength="6" autocomplete="new-password" required>
+          </div>
+          <button class="primary auth-submit" id="submitRegister" type="submit">✨ Buat Akun &amp; Main</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal Riwayat Bermain (ranked_history) -->
+    <div id="historyModal" class="modal-overlay hidden">
+      <div class="modal-card modal-wide">
+        <div class="modal-header">
+          <h3 class="modal-title">📜 Riwayat Pertandingan</h3>
+          <button class="modal-close" id="histClose" type="button">&times;</button>
+        </div>
+        <div class="hist-list" id="histList"></div>
+      </div>
+    </div>
+
+    <!-- Modal Leaderboard (leaderboard & ranked_history) -->
+    <div id="leaderboardModal" class="modal-overlay hidden">
+      <div class="modal-card modal-wide">
+        <div class="modal-header">
+          <h3 class="modal-title">🏆 Peringkat Ranked</h3>
+          <button class="modal-close" id="lbClose" type="button">&times;</button>
+        </div>
+        <div class="tab-group">
+          <button class="tab-btn active" id="tabLbStreak" type="button">🔥 Rekor Streak</button>
+          <button class="tab-btn" id="tabLbGames" type="button">🎮 Pemain Teraktif</button>
+        </div>
+        <div class="lb-list" id="lbList"></div>
+      </div>
+    </div>
   </main>
 
   <script>
@@ -1127,14 +1683,56 @@
       let r = 0;
       const finalStreak = S_ranked.runBest || 0;
       RANKS.forEach((x, i) => { if (finalStreak >= x[0]) r = i });
-      $('goRank').textContent = RANKS[r][1];
+      const finalRankTitle = RANKS[r][1];
+      $('goRank').textContent = finalRankTitle;
       $('goStreak').textContent = finalStreak;
       $('goHit').textContent = S_ranked.hit;
       const t = S_ranked.hit + S_ranked.miss;
-      $('goAcc').textContent = t ? Math.round(S_ranked.hit / t * 100) + '%' : '0%';
+      const finalAcc = t ? Math.round(S_ranked.hit / t * 100) : 0;
+      $('goAcc').textContent = finalAcc + '%';
       const m = $('msg'); m.classList.remove('go');
       $('gameover').classList.remove('hidden');
+
+      if (mode === 'ranked') {
+        saveRankedMatch(finalStreak, finalAcc, finalRankTitle);
+      }
     }
+
+    async function saveRankedMatch(finalStreak, finalAcc, finalRankTitle) {
+      const statusEl = $('goSaveStatus');
+      if (!sb || !currentUser) {
+        if (statusEl) statusEl.innerHTML = '<span class="saving">💡 Masuk akun agar rekor tersimpan di riwayat &amp; leaderboard</span>';
+        return;
+      }
+      if (statusEl) statusEl.innerHTML = '<span class="saving">⏳ Menyimpan rekor ke database...</span>';
+      try {
+        // 1. Pastikan nama user tersimpan di tabel profiles agar foreign key user_id terpenuhi
+        const uname = currentProfile?.username || currentUser.user_metadata?.username || 'Pemain';
+        const { error: pErr } = await sb.from('profiles').upsert({
+          id: currentUser.id,
+          username: uname,
+          updated_at: new Date()
+        });
+        if (pErr) console.warn("Profile upsert notice:", pErr);
+
+        // 2. Simpan ke ranked_history dengan kolom final_rank
+        const { error } = await sb.from('ranked_history').insert({
+          user_id: currentUser.id,
+          best_streak: finalStreak,
+          hits: S_ranked.hit,
+          greats: S_ranked.great,
+          misses: S_ranked.miss,
+          accuracy: finalAcc,
+          final_rank: finalRankTitle || 'Pemula'
+        });
+        if (error) throw error;
+        if (statusEl) statusEl.innerHTML = '<span class="saved">✅ Rekor ranked berhasil tersimpan!</span>';
+      } catch (err) {
+        console.error("Save match error:", err);
+        if (statusEl) statusEl.innerHTML = '<span class="save-err">⚠️ Gagal menyimpan ke server: ' + (err.message || 'Error') + '</span>';
+      }
+    }
+
     function resetRankedRun() {
       S_ranked.hit = 0;
       S_ranked.great = 0;
@@ -1147,23 +1745,36 @@
       updateLivesUI();
       stats();
     }
+
     function setMode(newMode) {
       if (mode === newMode && state !== 'gameover') return;
+      if (newMode === 'ranked' && !currentUser) {
+        openAuthModal('ranked');
+        return;
+      }
       mode = newMode;
       stop();
       $('gameover').classList.add('hidden');
       $('hist').innerHTML = '';
+      const panel = $('settingsPanel');
       if (mode === 'ranked') {
         S = S_ranked;
         resetRankedRun();
+        if (panel) panel.classList.add('panel-locked');
+        // Kunci pengaturan ke standar kompetitif (Preset Normal: 240°/s, 36°, 8°, 0.8s, 260ms)
+        $('speed').value = 240; $('zone').value = 36; $('great').value = 8; $('gap').value = 8; $('anim').value = 260;
+        cfg();
+        syncPreset();
       } else {
         S = S_practice;
+        if (panel) panel.classList.remove('panel-locked');
         updateLivesUI();
         stats();
       }
       $('mPractice').classList.toggle('on', mode === 'practice');
       $('mRanked').classList.toggle('on', mode === 'ranked');
     }
+
     function result(k, txt) {
       state = 'wait'; burst(k);
       const col = k === 'miss' ? '#ff3d5a' : k === 'great' ? '#ffd23d' : '#b6ff3d';
@@ -1196,12 +1807,461 @@
       while ($('hist').children.length > 14) $('hist').firstChild.remove();
       beep(k); stats(); schedule();
     }
+
     function begin() {
       if (mode === 'ranked' && S_ranked.lives <= 0) resetRankedRun();
       $('gameover').classList.add('hidden');
       state = 'wait'; $('idle').style.opacity = 0; $('start').textContent = '■ Berhenti'; schedule();
     }
     function stop() { clearTimeout(timer); state = 'idle'; zs = null; $('idle').style.opacity = 1; $('start').textContent = '▶ Mulai' }
+
+    /* ========================================================
+       SUPABASE INTEGRATION (AUTH, HISTORY, LEADERBOARD)
+       ======================================================== */
+    const SUPABASE_URL = 'https://wlyiifkoeoqzejqkzatp.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndseWlpZmtvZW9xemVqcWt6YXRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE4OTEwMDQsImV4cCI6MjEwNzQ2NzAwNH0.PI6GJmkJuEtv9ekQZyyPNaoYVADyNmkWDTkpj7jBfxc';
+    let sb = null;
+    let currentUser = null;
+    let currentProfile = null;
+    let pendingModeAfterAuth = null;
+
+    try {
+      if (window.supabase) {
+        sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      }
+    } catch (e) {
+      console.warn("Supabase init failed:", e);
+    }
+
+    async function initAuth() {
+      if (!sb) {
+        updateUserUI();
+        return;
+      }
+      try {
+        const { data: { session } } = await sb.auth.getSession();
+        if (session?.user) {
+          currentUser = session.user;
+          await fetchProfile(currentUser.id);
+        }
+      } catch (err) {
+        console.warn("Auth check failed:", err);
+      }
+      updateUserUI();
+
+      sb.auth.onAuthStateChange(async (event, session) => {
+        if (session?.user) {
+          currentUser = session.user;
+          await fetchProfile(currentUser.id);
+        } else {
+          currentUser = null;
+          currentProfile = null;
+        }
+        updateUserUI();
+      });
+    }
+
+    async function fetchProfile(uid) {
+      if (!sb || !uid) return;
+      try {
+        const { data } = await sb.from('profiles').select('id, username, avatar_url').eq('id', uid).maybeSingle();
+        if (data && data.username) {
+          currentProfile = data;
+        } else {
+          const uname = currentUser?.user_metadata?.username || currentUser?.email?.split('@')[0] || 'Pemain';
+          const { data: newP } = await sb.from('profiles').upsert({ id: uid, username: uname, updated_at: new Date() }).select().single();
+          currentProfile = newP || { id: uid, username: uname };
+        }
+      } catch (e) {
+        const uname = currentUser?.user_metadata?.username || currentUser?.email?.split('@')[0] || 'Pemain';
+        currentProfile = { id: uid, username: uname };
+      }
+    }
+
+    function updateUserUI() {
+      const uName = $('uName');
+      const uStatus = $('uStatus');
+      const btnAuth = $('btnAuth');
+      const btnHistory = $('btnHistory');
+
+      if (currentUser) {
+        const display = currentProfile?.username || currentUser.user_metadata?.username || currentUser.email?.split('@')[0] || 'Pemain';
+        uName.textContent = '@' + display;
+        uStatus.textContent = 'Pemain Ranked';
+        btnAuth.textContent = '🚪 Keluar';
+        btnAuth.classList.remove('u-btn-accent');
+        btnAuth.classList.add('u-btn-danger');
+        btnHistory.style.display = 'inline-flex';
+      } else {
+        uName.textContent = 'Tamu';
+        uStatus.textContent = 'Belum masuk';
+        btnAuth.textContent = '🔑 Masuk';
+        btnAuth.classList.add('u-btn-accent');
+        btnAuth.classList.remove('u-btn-danger');
+        btnHistory.style.display = 'none';
+      }
+    }
+
+    function openAuthModal(targetMode = null) {
+      pendingModeAfterAuth = targetMode;
+      hideAuthAlert();
+      switchAuthTab('login');
+      $('authModal').classList.remove('hidden');
+    }
+    function closeAuthModal() {
+      $('authModal').classList.add('hidden');
+      pendingModeAfterAuth = null;
+    }
+    function switchAuthTab(tab) {
+      hideAuthAlert();
+      if (tab === 'login') {
+        $('tabLogin').classList.add('active');
+        $('tabRegister').classList.remove('active');
+        $('formLogin').style.display = 'flex';
+        $('formRegister').style.display = 'none';
+      } else {
+        $('tabRegister').classList.add('active');
+        $('tabLogin').classList.remove('active');
+        $('formRegister').style.display = 'flex';
+        $('formLogin').style.display = 'none';
+      }
+    }
+    function showAuthAlert(msg, type = 'error') {
+      const el = $('authAlert');
+      el.className = `alert-box alert-${type}`;
+      el.textContent = msg;
+      el.style.display = 'block';
+    }
+    function hideAuthAlert() {
+      const el = $('authAlert');
+      el.style.display = 'none';
+      el.textContent = '';
+    }
+
+    function usernameToEmail(uname) {
+      const clean = uname.trim().toLowerCase().replace(/[^a-z0-9_]/g, '');
+      return `${clean || 'pemain'}@generatorgame.com`;
+    }
+
+    async function handleLogin() {
+      if (!sb) {
+        showAuthAlert('Supabase client belum siap.', 'error');
+        return;
+      }
+      const username = $('loginUsername').value.trim();
+      const password = $('loginPass').value;
+      if (!username || !password) {
+        showAuthAlert('Mohon masukkan username dan password.', 'error');
+        return;
+      }
+      const submitBtn = $('submitLogin');
+      submitBtn.disabled = true;
+      submitBtn.textContent = '⏳ Memproses...';
+      try {
+        const email = usernameToEmail(username);
+        const { data, error } = await sb.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        currentUser = data.user;
+        await fetchProfile(currentUser.id, username);
+        updateUserUI();
+        closeAuthModal();
+        if (pendingModeAfterAuth === 'ranked') {
+          setMode('ranked');
+        }
+      } catch (err) {
+        console.error("Login error:", err);
+        let msg = err.message || 'Gagal masuk.';
+        if (err.message?.includes('Invalid login credentials')) {
+          msg = 'Username atau password salah.';
+        } else if (err.message?.includes('Email not confirmed')) {
+          msg = 'Harap matikan toggle "Confirm email" di Dashboard Supabase (Authentication -> Providers -> Email) agar login instan.';
+        }
+        showAuthAlert(msg, 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = '▶ Masuk & Main';
+      }
+    }
+
+    async function handleRegister() {
+      if (!sb) {
+        showAuthAlert('Supabase client belum siap.', 'error');
+        return;
+      }
+      const username = $('regUsername').value.trim();
+      const password = $('regPass').value;
+      if (!username || !password) {
+        showAuthAlert('Mohon masukkan username dan password.', 'error');
+        return;
+      }
+      if (username.length < 3) {
+        showAuthAlert('Username minimal 3 karakter.', 'error');
+        return;
+      }
+      if (password.length < 6) {
+        showAuthAlert('Password minimal 6 karakter.', 'error');
+        return;
+      }
+      const submitBtn = $('submitRegister');
+      submitBtn.disabled = true;
+      submitBtn.textContent = '⏳ Mendaftarkan...';
+      try {
+        const email = usernameToEmail(username);
+        const { data, error } = await sb.auth.signUp({
+          email,
+          password,
+          options: {
+            data: { username }
+          }
+        });
+        if (error) throw error;
+        if (data.user) {
+          try {
+            await sb.from('profiles').upsert({ id: data.user.id, username: username, updated_at: new Date() });
+          } catch (e) {}
+        }
+        if (data.session) {
+          currentUser = data.user;
+          await fetchProfile(currentUser.id, username);
+          updateUserUI();
+          closeAuthModal();
+          if (pendingModeAfterAuth === 'ranked') {
+            setMode('ranked');
+          }
+        } else {
+          showAuthAlert('Akun berhasil dibuat! Silakan langsung login dengan username & password Anda.', 'success');
+          setTimeout(() => {
+            $('loginUsername').value = username;
+            $('loginPass').value = password;
+            switchAuthTab('login');
+          }, 1500);
+        }
+      } catch (err) {
+        console.error("Register error:", err);
+        let msg = err.message || 'Pendaftaran gagal.';
+        if (err.message?.includes('User already registered')) {
+          msg = 'Username ini sudah terdaftar. Silakan pilih username lain atau langsung masuk.';
+        } else if (err.message?.includes('rate limit')) {
+          msg = 'Batas email tercapai di Supabase. Mohon matikan toggle "Confirm email" di Dashboard Supabase (Authentication -> Providers -> Email) agar registrasi instan tanpa batasan.';
+        }
+        showAuthAlert(msg, 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = '✨ Buat Akun & Main';
+      }
+    }
+
+    async function handleLogout() {
+      if (!confirm('Yakin ingin keluar akun?')) return;
+      if (sb) await sb.auth.signOut();
+      currentUser = null;
+      currentProfile = null;
+      updateUserUI();
+      if (mode === 'ranked') {
+        setMode('practice');
+      }
+    }
+
+    /* Modal Riwayat Bermain (ranked_history) */
+    function openHistoryModal() {
+      if (!currentUser) {
+        openAuthModal();
+        return;
+      }
+      $('historyModal').classList.remove('hidden');
+      loadHistory();
+    }
+    function closeHistoryModal() {
+      $('historyModal').classList.add('hidden');
+    }
+
+    async function loadHistory() {
+      const listEl = $('histList');
+      if (!sb || !currentUser) {
+        listEl.innerHTML = '<div class="empty-state">Silakan masuk akun terlebih dahulu.</div>';
+        return;
+      }
+      listEl.innerHTML = '<div class="loading-state">⏳ Mengambil riwayat bermain...</div>';
+      try {
+        const { data, error } = await sb
+          .from('ranked_history')
+          .select('*')
+          .eq('user_id', currentUser.id)
+          .order('created_at', { ascending: false })
+          .limit(30);
+
+        if (error) throw error;
+        if (!data || data.length === 0) {
+          listEl.innerHTML = `
+            <div class="empty-state">
+              <div style="font-size:38px;margin-bottom:8px">📜</div>
+              <b style="color:#fff;font-size:14px">Belum Ada Riwayat Pertandingan</b>
+              <p style="margin-top:6px">Mainkan mode Ranked sampai selesai untuk mencatat rekor pertamamu!</p>
+            </div>`;
+          return;
+        }
+
+        let html = '';
+        data.forEach(m => {
+          const d = new Date(m.created_at);
+          const dateStr = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+          const timeStr = d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+          let r = 0;
+          RANKS.forEach((x, i) => { if (m.best_streak >= x[0]) r = i });
+          const rankTitle = m.final_rank || RANKS[r][1];
+
+          html += `
+            <div class="hist-card">
+              <div class="hist-card-head">
+                <span class="hist-time">📅 ${dateStr} • ${timeStr}</span>
+                <span class="hist-rank-badge">${rankTitle}</span>
+              </div>
+              <div class="hist-card-body">
+                <div class="hist-metric">
+                  <span class="lbl">Streak Run</span>
+                  <b class="val streak-val">🔥 ${m.best_streak}</b>
+                </div>
+                <div class="hist-metric">
+                  <span class="lbl">Akurasi</span>
+                  <b class="val acc-val">🎯 ${m.accuracy}%</b>
+                </div>
+                <div class="hist-metric">
+                  <span class="lbl">Rincian</span>
+                  <span class="val-detail">✅ ${m.hits} &nbsp;⭐ ${m.greats} &nbsp;💥 ${m.misses}</span>
+                </div>
+              </div>
+            </div>`;
+        });
+        listEl.innerHTML = html;
+      } catch (err) {
+        console.error("Load history error:", err);
+        listEl.innerHTML = `<div class="empty-state">Gagal memuat riwayat: ${err.message}</div>`;
+      }
+    }
+
+    /* Modal Leaderboard */
+    let currentLbTab = 'streak';
+    function openLeaderboardModal() {
+      $('leaderboardModal').classList.remove('hidden');
+      switchLbTab('streak');
+    }
+    function closeLeaderboardModal() {
+      $('leaderboardModal').classList.add('hidden');
+    }
+    function switchLbTab(tab) {
+      currentLbTab = tab;
+      if (tab === 'streak') {
+        $('tabLbStreak').classList.add('active');
+        $('tabLbGames').classList.remove('active');
+      } else {
+        $('tabLbGames').classList.add('active');
+        $('tabLbStreak').classList.remove('active');
+      }
+      loadLeaderboard(tab);
+    }
+
+    async function loadLeaderboard(tab) {
+      const listEl = $('lbList');
+      if (!sb) {
+        listEl.innerHTML = '<div class="empty-state">Koneksi database belum siap.</div>';
+        return;
+      }
+      listEl.innerHTML = '<div class="loading-state">⏳ Mengambil data peringkat...</div>';
+
+      try {
+        if (tab === 'streak') {
+          // Rekor Streak Tertinggi dari ranked_history join profiles
+          const { data, error } = await sb
+            .from('ranked_history')
+            .select('user_id, best_streak, hits, accuracy, created_at, profiles(username)')
+            .order('best_streak', { ascending: false })
+            .limit(60);
+
+          if (error) throw error;
+          if (!data || data.length === 0) {
+            listEl.innerHTML = '<div class="empty-state">Belum ada rekor ranked. Jadilah yang pertama di papan peringkat!</div>';
+            return;
+          }
+
+          // Ambil rekor tertinggi per user unik
+          const userBestMap = new Map();
+          data.forEach(row => {
+            const uid = row.user_id;
+            if (!userBestMap.has(uid) || row.best_streak > userBestMap.get(uid).best_streak) {
+              userBestMap.set(uid, row);
+            }
+          });
+          const rows = Array.from(userBestMap.values()).sort((a, b) => b.best_streak - a.best_streak).slice(0, 25);
+
+          let html = '';
+          rows.forEach((r, idx) => {
+            const pos = idx + 1;
+            const topClass = pos === 1 ? 'top-1' : pos === 2 ? 'top-2' : pos === 3 ? 'top-3' : '';
+            const medal = pos === 1 ? '🥇' : pos === 2 ? '🥈' : pos === 3 ? '🥉' : `#${pos}`;
+            const uname = r.profiles?.username || 'Pemain';
+            const isMe = currentUser && r.user_id === currentUser.id;
+            const meBadge = isMe ? '<span class="lb-badge-me">KAMU</span>' : '';
+
+            html += `
+              <div class="lb-item ${topClass} ${isMe ? 'is-me' : ''}">
+                <div class="lb-pos">${medal}</div>
+                <div class="lb-user-wrap">
+                  <div class="lb-username">@${uname} ${meBadge}</div>
+                  <span class="lb-meta">Akurasi: ${r.accuracy}% • ${r.hits} Berhasil</span>
+                </div>
+                <div class="lb-stat">
+                  <b class="lb-stat-val">🔥 ${r.best_streak}</b>
+                  <span class="lb-stat-lbl">Rekor Streak</span>
+                </div>
+              </div>`;
+          });
+          listEl.innerHTML = html;
+        } else {
+          // Pemain Teraktif dari view leaderboard (user_id, username, total_games, last_played)
+          const { data, error } = await sb
+            .from('leaderboard')
+            .select('user_id, username, total_games, last_played')
+            .order('total_games', { ascending: false })
+            .limit(25);
+
+          if (error) throw error;
+          if (!data || data.length === 0) {
+            listEl.innerHTML = '<div class="empty-state">Belum ada data pemain teraktif.</div>';
+            return;
+          }
+
+          let html = '';
+          data.forEach((r, idx) => {
+            const pos = idx + 1;
+            const topClass = pos === 1 ? 'top-1' : pos === 2 ? 'top-2' : pos === 3 ? 'top-3' : '';
+            const medal = pos === 1 ? '🥇' : pos === 2 ? '🥈' : pos === 3 ? '🥉' : `#${pos}`;
+            const uname = r.username || 'Pemain';
+            const isMe = currentUser && r.user_id === currentUser.id;
+            const meBadge = isMe ? '<span class="lb-badge-me">KAMU</span>' : '';
+            const lastDate = r.last_played ? new Date(r.last_played).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) : '-';
+
+            html += `
+              <div class="lb-item ${topClass} ${isMe ? 'is-me' : ''}">
+                <div class="lb-pos">${medal}</div>
+                <div class="lb-user-wrap">
+                  <div class="lb-username">@${uname} ${meBadge}</div>
+                  <span class="lb-meta">Terakhir main: ${lastDate}</span>
+                </div>
+                <div class="lb-stat">
+                  <b class="lb-stat-val">🎮 ${r.total_games}</b>
+                  <span class="lb-stat-lbl">Game</span>
+                </div>
+              </div>`;
+          });
+          listEl.innerHTML = html;
+        }
+      } catch (err) {
+        console.error("Load leaderboard error:", err);
+        listEl.innerHTML = `<div class="empty-state">Gagal memuat peringkat: ${err.message}</div>`;
+      }
+    }
+
+    /* Event Listeners */
     $('start').addEventListener('click', () => {
       audio();
       if (state === 'gameover') { resetRankedRun(); begin(); return; }
@@ -1212,16 +2272,65 @@
       else { S.hit = S.great = S.miss = S.streak = 0; $('hist').innerHTML = ''; stats(); }
     });
     $('mPractice').addEventListener('click', () => { audio(); setMode('practice'); });
-    $('mRanked').addEventListener('click', () => { audio(); setMode('ranked'); });
+    $('mRanked').addEventListener('click', () => {
+      audio();
+      if (!currentUser) {
+        openAuthModal('ranked');
+      } else {
+        setMode('ranked');
+      }
+    });
+
+    // Game Over actions
     $('goRetry').addEventListener('click', () => { audio(); resetRankedRun(); begin(); });
     $('goPractice').addEventListener('click', () => { audio(); setMode('practice'); });
+    $('goHistory').addEventListener('click', () => { audio(); openHistoryModal(); });
+    $('goLeaderboard').addEventListener('click', () => { audio(); openLeaderboardModal(); });
     $('gameover').addEventListener('pointerdown', e => e.stopPropagation());
+
+    // User Bar actions
+    $('btnAuth').addEventListener('click', () => {
+      audio();
+      if (currentUser) handleLogout();
+      else openAuthModal();
+    });
+    $('btnHistory').addEventListener('click', () => { audio(); openHistoryModal(); });
+    $('btnLeaderboard').addEventListener('click', () => { audio(); openLeaderboardModal(); });
+
+    // Modals Close
+    $('authClose').addEventListener('click', () => closeAuthModal());
+    $('histClose').addEventListener('click', () => closeHistoryModal());
+    $('lbClose').addEventListener('click', () => closeLeaderboardModal());
+
+    // Auth Tabs & Forms
+    $('tabLogin').addEventListener('click', () => switchAuthTab('login'));
+    $('tabRegister').addEventListener('click', () => switchAuthTab('register'));
+    $('formLogin').addEventListener('submit', e => { e.preventDefault(); handleLogin(); });
+    $('formRegister').addEventListener('submit', e => { e.preventDefault(); handleRegister(); });
+
+    // Leaderboard Tabs
+    $('tabLbStreak').addEventListener('click', () => switchLbTab('streak'));
+    $('tabLbGames').addEventListener('click', () => switchLbTab('games'));
+
+    // Backdrop clicks to close modal
+    ['authModal', 'historyModal', 'leaderboardModal'].forEach(id => {
+      $(id).addEventListener('pointerdown', e => {
+        if (e.target === $(id)) {
+          $(id).classList.add('hidden');
+          if (id === 'authModal') pendingModeAfterAuth = null;
+        }
+      });
+    });
+
     $('stage').addEventListener('pointerdown', e => { e.preventDefault(); press() });
     $('go').addEventListener('click', () => { audio(); $('intro').classList.add('out'); setTimeout(() => { if (state === 'idle') begin() }, 350) });
     addEventListener('keydown', e => {
       if (e.code === 'Space') {
         e.preventDefault();
         if (e.repeat) return;
+        if (!$('authModal').classList.contains('hidden') || !$('historyModal').classList.contains('hidden') || !$('leaderboardModal').classList.contains('hidden')) {
+          return;
+        }
         if (!$('intro').classList.contains('out')) { $('go').click(); return; }
         if (state === 'gameover') { resetRankedRun(); begin(); return; }
         press();
@@ -1246,7 +2355,8 @@
       }
       else tone(660, 0, .1)
     }
-    cfg(); updateLivesUI(); stats();
+
+    cfg(); updateLivesUI(); stats(); initAuth();
   </script>
 </body>
 
