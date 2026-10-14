@@ -404,13 +404,14 @@
       font: inherit;
       font-weight: 900;
       font-size: 15px;
-      padding: 13px 18px;
+      padding: 12px 18px;
       border-radius: 16px;
       border: 2px solid var(--bd);
       background: var(--card);
       color: var(--fg);
       cursor: pointer;
-      transition: transform .12s
+      transition: transform .12s;
+      touch-action: manipulation;
     }
 
     button:hover {
@@ -436,9 +437,10 @@
       color: #2a0640;
       font-family: Bungee, sans-serif;
       font-weight: 400;
-      font-size: 17px;
+      font-size: 16px;
       background: linear-gradient(180deg, var(--sun), #ff9a3d);
       box-shadow: 0 5px 0 #b35a00, 0 10px 30px -6px var(--sun);
+      touch-action: manipulation;
     }
 
     button.primary:active {
@@ -675,30 +677,43 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: rgba(13, 7, 36, .92);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      background: rgba(13, 7, 36, .94);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       border-radius: 33px;
-      padding: 16px;
+      padding: 10px 14px;
       opacity: 1;
       transition: opacity .25s ease;
-      pointer-events: auto
+      pointer-events: auto;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, .2) transparent;
+    }
+
+    .go-overlay::-webkit-scrollbar {
+      width: 4px;
+    }
+    .go-overlay::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, .2);
+      border-radius: 4px;
     }
 
     .go-overlay.hidden {
       opacity: 0;
-      pointer-events: none
+      pointer-events: none;
     }
 
     .go-box {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 12px;
+      gap: 6px;
       text-align: center;
       width: 100%;
-      max-width: 320px;
-      animation: popIn .32s cubic-bezier(.175, .885, .32, 1.275)
+      max-width: 300px;
+      margin: auto;
+      animation: popIn .32s cubic-bezier(.175, .885, .32, 1.275);
     }
 
     @keyframes popIn {
@@ -708,59 +723,69 @@
 
     .go-badge {
       font-family: Bungee, sans-serif;
-      font-size: 26px;
+      font-size: 21px;
       color: var(--red);
-      text-shadow: 0 0 20px var(--red), 0 3px 0 rgba(0, 0, 0, .5);
-      letter-spacing: .04em
+      text-shadow: 0 0 16px var(--red), 0 3px 0 rgba(0, 0, 0, .5);
+      letter-spacing: .03em;
+      line-height: 1.1;
+      margin: 0;
     }
 
     .go-title {
-      font-size: 13.5px;
+      font-size: 12px;
       color: #ffd2dd;
-      margin-top: -6px
+      margin: -2px 0 0;
     }
 
     .go-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 8px;
+      gap: 5px;
       width: 100%;
       background: rgba(255, 255, 255, .06);
       border: 1px solid var(--bd);
-      border-radius: 14px;
-      padding: 10px
+      border-radius: 12px;
+      padding: 6px 10px;
     }
 
     .go-grid div {
       display: flex;
       flex-direction: column;
-      gap: 2px;
-      text-align: center
+      gap: 1px;
+      text-align: center;
     }
 
     .go-grid span {
-      font-size: 10.5px;
-      color: var(--mut)
+      font-size: 9.5px;
+      color: var(--mut);
     }
 
     .go-grid b {
       font-family: Bungee, sans-serif;
-      font-size: 15px;
-      color: var(--sun)
+      font-size: 13.5px;
+      color: var(--sun);
+      line-height: 1.1;
     }
 
     .go-btns {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
       width: 100%;
-      margin-top: 4px
+      margin-top: 2px;
     }
 
     .go-btns button {
-      padding: 11px 16px;
-      font-size: 14px;
-      width: 100%
+      padding: 8px 12px;
+      font-size: 12.5px;
+      border-radius: 12px;
+      width: 100%;
+      touch-action: manipulation;
+    }
+
+    .go-btns button.primary {
+      padding: 9px 14px;
+      font-size: 13.5px;
     }
 
     #intro {
@@ -858,22 +883,29 @@
       background: var(--card);
       border: 2px solid var(--bd);
       border-radius: 18px;
-      padding: 9px 12px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .user-header-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 10px;
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      width: 100%;
     }
     .user-info {
       display: flex;
       align-items: center;
       gap: 9px;
       min-width: 0;
+      flex: 1;
     }
     .user-avatar {
-      font-size: 19px;
+      font-size: 18px;
       line-height: 1;
       background: rgba(255, 255, 255, .1);
       width: 34px;
@@ -882,13 +914,14 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      border: 1px solid var(--bd);
+      border: 1.5px solid var(--bd);
       flex-shrink: 0;
     }
     .user-text {
       display: flex;
       flex-direction: column;
       min-width: 0;
+      overflow: hidden;
     }
     .user-name {
       font-weight: 900;
@@ -901,17 +934,25 @@
     .user-role {
       font-size: 11px;
       color: var(--mut);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .user-actions {
       display: flex;
       align-items: center;
-      gap: 6px;
-      flex-shrink: 0;
+      gap: 7px;
+      width: 100%;
+    }
+    .user-actions .u-btn {
+      flex: 1;
+      justify-content: center;
+      text-align: center;
     }
     .u-btn {
-      font-size: 11.5px;
+      font-size: 12px;
       font-weight: 800;
-      padding: 6px 10px;
+      padding: 7px 11px;
       border-radius: 12px;
       border: 1px solid var(--bd);
       background: rgba(255, 255, 255, .06);
@@ -921,10 +962,14 @@
       align-items: center;
       gap: 4px;
       transition: all .15s ease;
+      touch-action: manipulation;
     }
     .u-btn:hover {
       background: rgba(255, 255, 255, .15);
       transform: translateY(-1px);
+    }
+    .u-btn:active {
+      transform: translateY(1px);
     }
     .u-btn-accent {
       background: linear-gradient(135deg, rgba(25, 227, 255, .25), rgba(138, 92, 255, .35));
@@ -1261,11 +1306,11 @@
 
     /* Game Over Extra UI */
     .go-save-status {
-      font-size: 12px;
-      padding: 4px 8px;
+      font-size: 11px;
+      padding: 2px 8px;
       border-radius: 8px;
-      margin-top: -4px;
-      min-height: 22px;
+      margin: 0;
+      min-height: 18px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -1285,6 +1330,12 @@
       grid-template-columns: 1fr 1fr;
       gap: 6px;
       width: 100%;
+    }
+    .go-row-btns button {
+      padding: 7px 6px;
+      font-size: 11.5px;
+      white-space: nowrap;
+      touch-action: manipulation;
     }
     .empty-state {
       text-align: center;
@@ -1318,6 +1369,237 @@
       display: block;
     }
 
+    /* Mobile-First and Responsive Optimizations */
+    @media (max-width: 480px) {
+      body {
+        padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 24px);
+      }
+      main {
+        padding: 12px 12px 32px;
+        gap: 12px;
+        width: 100%;
+      }
+      h1 {
+        font-size: clamp(26px, 8.5vw, 36px);
+      }
+      header p {
+        font-size: 13px;
+        margin-top: 4px;
+      }
+      .user-bar {
+        padding: 9px 11px;
+        gap: 8px;
+        border-radius: 16px;
+      }
+      .user-avatar {
+        width: 34px;
+        height: 34px;
+        font-size: 17px;
+      }
+      .user-name {
+        font-size: 13.5px;
+      }
+      .user-role {
+        font-size: 10.5px;
+      }
+      .u-btn {
+        padding: 7px 10px;
+        font-size: 11.5px;
+        border-radius: 10px;
+      }
+      .mode-tabs {
+        padding: 4px;
+        gap: 6px;
+        border-radius: 16px;
+      }
+      .mode-btn {
+        padding: 9px 6px;
+        font-size: 12.5px;
+        border-radius: 12px;
+        gap: 5px;
+      }
+      .badge-lives {
+        font-size: 10.5px;
+        padding: 1px 6px;
+      }
+      .lives-card {
+        padding: 8px 12px;
+        border-radius: 15px;
+      }
+      .lives-label {
+        font-size: 12px;
+      }
+      .lives-hearts {
+        font-size: 18px;
+        gap: 4px;
+      }
+      .lives-tag {
+        font-size: 11px;
+      }
+      .rank {
+        padding: 8px 12px;
+        gap: 5px;
+        border-radius: 15px;
+      }
+      .rank div {
+        font-size: 12px;
+      }
+      .rank b {
+        font-size: 13.5px;
+      }
+      .bar {
+        height: 10px;
+      }
+      .stats {
+        gap: 6px;
+      }
+      .stat {
+        padding: 7px 3px 5px;
+        border-radius: 13px;
+        border-bottom-width: 4px;
+      }
+      .stat em {
+        font-size: 14px;
+      }
+      .stat b {
+        font-size: 18px;
+      }
+      .stat span {
+        font-size: 9.5px;
+      }
+      .wrap {
+        border-radius: 32px;
+        padding: 4px;
+        max-width: 380px;
+      }
+      .stage {
+        border-radius: 28px;
+      }
+      .btns {
+        gap: 8px;
+        max-width: 380px;
+      }
+      .btns button {
+        padding: 11px 16px;
+        font-size: 14px;
+        border-radius: 14px;
+      }
+      .btns button.primary {
+        font-size: 15px;
+      }
+      .panel {
+        padding: 14px 12px;
+        border-radius: 20px;
+        gap: 10px;
+      }
+      .panel h2 {
+        font-size: 15px;
+        margin: 4px 0 2px;
+      }
+      .presets {
+        gap: 5px;
+      }
+      .presets button {
+        padding: 8px 2px;
+        font-size: 11px;
+        border-radius: 10px;
+      }
+      .row {
+        grid-template-columns: 96px 1fr 42px;
+        gap: 6px;
+        font-size: 12px;
+      }
+      .modal-overlay {
+        padding: 10px;
+      }
+      .modal-card {
+        padding: 16px 14px;
+        border-radius: 20px;
+        gap: 12px;
+        max-height: 90vh;
+      }
+      .modal-title {
+        font-size: 17px;
+      }
+      .modal-desc {
+        font-size: 12px;
+      }
+      .tab-btn {
+        padding: 8px 6px;
+        font-size: 11.5px;
+      }
+      .form-input {
+        font-size: 16px; /* Mencegah auto-zoom di iOS Safari saat focus input */
+        padding: 10px 12px;
+        border-radius: 10px;
+      }
+      .auth-submit {
+        padding: 11px;
+        font-size: 14px;
+      }
+      .hist-card {
+        padding: 9px 11px;
+        border-radius: 12px;
+        gap: 6px;
+      }
+      .hist-card-head {
+        font-size: 11px;
+      }
+      .hist-rank-badge {
+        font-size: 10px;
+        padding: 1px 6px;
+      }
+      .hist-card-body {
+        font-size: 11.5px;
+        gap: 4px;
+      }
+      .hist-metric .val {
+        font-size: 13px;
+      }
+      .val-detail {
+        font-size: 10px;
+      }
+      .lb-item {
+        grid-template-columns: 28px 1fr auto;
+        gap: 8px;
+        padding: 8px 10px;
+        border-radius: 12px;
+      }
+      .lb-pos {
+        font-size: 13.5px;
+      }
+      .lb-username {
+        font-size: 12.5px;
+      }
+      .lb-meta {
+        font-size: 10.5px;
+      }
+      .lb-stat .streak-val,
+      .lb-stat .acc-val {
+        font-size: 13px;
+      }
+    }
+
+    @media (max-height: 700px) {
+      header p {
+        display: none;
+      }
+      main {
+        gap: 10px;
+        padding-top: 10px;
+      }
+      .orb {
+        width: 110px;
+        height: 110px;
+      }
+      .orb-w span {
+        font-size: 40px;
+      }
+      #intro {
+        gap: 14px;
+      }
+    }
+
     @media(prefers-reduced-motion:reduce) {
       * {
         animation-duration: .01ms !important;
@@ -1348,17 +1630,19 @@
     </header>
 
     <div class="user-bar" id="userBar">
-      <div class="user-info">
-        <span class="user-avatar" id="uAvatar">👤</span>
-        <div class="user-text">
-          <span class="user-name" id="uName">Tamu</span>
-          <span class="user-role" id="uStatus">Belum masuk</span>
+      <div class="user-header-row">
+        <div class="user-info">
+          <span class="user-avatar" id="uAvatar">👤</span>
+          <div class="user-text">
+            <span class="user-name" id="uName">Tamu</span>
+            <span class="user-role" id="uStatus">Belum masuk</span>
+          </div>
         </div>
+        <button class="u-btn u-btn-accent" id="btnAuth" type="button">🔑 Masuk</button>
       </div>
       <div class="user-actions">
         <button class="u-btn" id="btnLeaderboard" type="button" title="Lihat Peringkat">🏆 Leaderboard</button>
         <button class="u-btn" id="btnHistory" type="button" title="Riwayat Pertandingan" style="display:none">📜 Riwayat</button>
-        <button class="u-btn u-btn-accent" id="btnAuth" type="button">🔑 Masuk</button>
       </div>
     </div>
 
